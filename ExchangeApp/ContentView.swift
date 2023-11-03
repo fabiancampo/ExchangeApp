@@ -17,6 +17,8 @@ struct ContentView: View {
     private let currencies = ["USD", "EUR", "JPY", "CAD"]
 
     @State private var animateGradient: Bool = false
+    @State private var isShowingHistory: Bool = false
+    @State private var isShowingButton: Bool = false
     
     var body: some View {
         
@@ -47,7 +49,12 @@ struct ContentView: View {
                                 }
                                 TextField("Introduce la cantidad", text: $viewModel.amount).keyboardType(.numberPad).onChange(of: viewModel.amount) {
                                     viewModel.fetchRate()
-                                }
+                                    isShowingButton = (viewModel.amount == "") ? false : true
+                                      
+                                    }
+                                
+                                    
+                                   
                                 
                             }
                             
@@ -91,8 +98,21 @@ struct ContentView: View {
                                 
                                 Text(viewModel.result)
                                 
+                                
                             }
                             
+                            Button {
+                                
+                                viewModel.history.append("\(viewModel.amount) \(viewModel.baseCurrency) = \(viewModel.result)")
+                               
+                            } label: {
+                                Text("Guardar en el historial")
+                            }
+                            .accentColor(.white)
+                            .disabled(isShowingButton == false)
+                           
+                            
+                                        
                         }
                     } // Group
                     .listRowBackground(Rectangle()
@@ -106,9 +126,29 @@ struct ContentView: View {
                 .scrollContentBackground(.hidden)
                 
                 .navigationTitle("Conversor")
+                .toolbar {
+                    Button {
+                        isShowingHistory.toggle()
+                    } label: {
+                        HStack {
+                            Image(systemName: "clock.fill")
+                            Text("Historial")
+                                
+                        }
+                        .foregroundStyle(.white)
+                        
+                    }
+                }
+                .sheet(isPresented: $isShowingHistory) {
+                    
+                    HistoryView(viewModel: viewModel)
+                }
             }
         }
     }
+    func didDismiss() {
+           // Handle the dismissing action.
+       }
 
     
  

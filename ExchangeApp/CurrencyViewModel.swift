@@ -19,6 +19,7 @@ class CurrencyViewModel: ObservableObject {
     @Published var targetCurrency: String = "EUR"
     @Published var rate: Double = 0.9
     @Published var result: String = "Resultado de la conversión aparecerá aquí"
+    @Published var history: [String] = []
     
     
     static let shared = CurrencyViewModel()
